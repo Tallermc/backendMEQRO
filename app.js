@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors')
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 const routes = require('./routes/index');
 const apiLogin = require('./routes/APIs/auth')
 
@@ -20,6 +20,6 @@ app.use(cors({
 app.use('/', routes);
 app.use('/auth/', apiLogin)
 
-app.listen(port, () => {
-  console.log(`Servidor escuchando en el puerto:${port}`);
+app.listen(PORT, () => {
+  console.log(`Servidor escuchando en el puerto:${PORT}`);
 });

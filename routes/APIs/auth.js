@@ -29,5 +29,18 @@ router.post('/login', (req, res) => {
   });
 });
 
+router.post('/signup', (req, res) => {
+  console.log(req.body);
+  const { email, password, telefono, nombre, apellido } = req.body
+  const insert = `INSERT INTO cliente (nombre, apellido, telefono, correo, password) VALUES (?,?,?,?,?)`
+  db.query(insert,[nombre, apellido, telefono, email, password], (err, result)=>{
+    if(err){
+      console.log(err)
+      return res.status(500).json({message: 'No se hizo la insercion del usuario'})
+    }
+    console.log(result);
+    return res.status(200).json({message: 'Usuario registrado exitosamente'})
+  })
+})
 
 module.exports = router;
