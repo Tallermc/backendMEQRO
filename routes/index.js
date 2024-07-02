@@ -5,9 +5,15 @@ const db = require("../database/connection");
 
 router.get("/data", (req, res) => {
   res.json({
-    saludo: "Hola perro",
+    saludo: "Hola papito que ondaaa",
     tarea: "Lo hiciste ta arriba",
     message: 13663,
+  });
+});
+
+router.get("/", (req,res)=>{
+  res.json({
+    comment: "Hi! There"
   });
 });
 
