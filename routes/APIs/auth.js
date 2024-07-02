@@ -1,46 +1,57 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const db = require('../../database/connection');
+const bcrypt = require("bcrypt");
+const db = require("../../database/connection");
+//Encryption
+const saltRounds = 10;
 
-router.post('/login', (req, res) => {
+
+router.post("/login", async (req, res) => {
   const { correo, password } = req.body;
-  const query = `SELECT * FROM cliente WHERE correo=?`;
-  db.query(query, [correo], (err, result) => {
-    if (err) {
-      console.log('Error en la base de datos:', err);
-      res.status(500).json({ message: 'Error al logear usuario' });
-      return;
-    }
+  const query = `SELECT nombre, apellido, correo, contrasena FROM cliente WHERE correo=?`;
+
+  try {
+    const [result] = await db.query(query, [correo]);
+
     if (result.length === 0) {
-      res.status(401).json({ message: 'Correo o contraseña incorrectos' });
+      res.status(401).json({ message: "Usuario no encontrado" });
       return;
     }
+
     const user = result[0];
-    // Aquí deberías usar bcrypt.compare para verificar la contraseña
-    if (password === user.password) { // Deberías usar bcrypt.compare(password, user.password)
+    const match = bcrypt.compareSync(password, user.contrasena);
+
+    if (match) {
+      console.log("Login exitoso");
       res.json({
-        token: 'fake-jwt-token',
+        token: "fake-jwt-token",
         name: user.nombre,
-        email: user.correo
+        email: user.correo,
       });
     } else {
-      res.status(401).json({ message: 'Correo o contraseña incorrectos' });
+      console.log("Correo o contraseña incorrectos");
+      res.status(401).json({ message: "Correo o contraseña incorrectos" });
     }
-  });
+  } catch (err) {
+    console.error("Error en la base de datos:", err);
+    res.status(500).json({ message: "Error al logear usuario" });
+  }
 });
 
-router.post('/signup', (req, res) => {
+router.post("/signup", async (req, res) => {
   console.log(req.body);
-  const { email, password, telefono, nombre, apellido } = req.body
-  const insert = `INSERT INTO cliente (nombre, apellido, telefono, correo, password) VALUES (?,?,?,?,?)`
-  db.query(insert,[nombre, apellido, telefono, email, password], (err, result)=>{
-    if(err){
-      console.log(err)
-      return res.status(500).json({message: 'No se hizo la insercion del usuario'})
-    }
+  const { email, password, telefono, nombre, apellido } = req.body;
+  const hashedPass = bcrypt.hashSync(password, saltRounds);
+  const insert = `INSERT INTO cliente (nombre, apellido, telefono, correo, contrasena) VALUES (?,?,?,?,?)`;
+
+  try {
+    const [result] = await db.query(insert, [nombre, apellido, telefono, email, hashedPass]);
     console.log(result);
-    return res.status(200).json({message: 'Usuario registrado exitosamente'})
-  })
-})
+    res.status(200).json({ message: "Usuario registrado exitosamente" });
+  } catch (err) {
+    console.error("Error al registrar al usuario:", err);
+    res.status(500).json({ message: "Error al registrar al usuario" });
+  }
+});
 
 module.exports = router;

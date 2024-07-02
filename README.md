@@ -1,1 +1,1 @@
-*Este sera la API gateway del backend 
+*Esta sera la API gateway del backend 
