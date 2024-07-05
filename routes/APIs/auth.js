@@ -8,7 +8,7 @@ const saltRounds = 10;
 
 router.post("/login", async (req, res) => {
   const { correo, password } = req.body;
-  const query = `SELECT nombre, apellido, correo, contrasena FROM cliente WHERE correo=?`;
+  const query = `SELECT id,nombre, apellido, correo, contrasena, telefono FROM cliente WHERE correo=?`;
 
   try {
     const [result] = await db.query(query, [correo]);
@@ -24,9 +24,11 @@ router.post("/login", async (req, res) => {
     if (match) {
       console.log("Login exitoso");
       res.json({
-        token: "fake-jwt-token",
+        token: user.id,
         name: user.nombre,
         email: user.correo,
+        lastName: user.apellido,
+        phone: user.telefono,
       });
     } else {
       console.log("Correo o contraseña incorrectos");

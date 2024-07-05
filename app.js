@@ -6,6 +6,7 @@ const app = express();
 const routes = require('./routes/index');
 const apiLogin = require('./routes/APIs/auth');
 const dateManagment = require('./routes/APIs/dates');
+const servicesManagment = require('./routes/APIs/services');
 const PORT = process.env.PORT || 3000;
 
 //Middleware del body para hacerlo JSON
@@ -25,8 +26,9 @@ app.use(cors({
 
 //API routes
 app.use('/', routes);
-app.use('/auth/', apiLogin)
-app.use('/dates/', dateManagment)
+app.use('/auth/', apiLogin);
+app.use('/dates/', dateManagment);
+app.use('/taller/', servicesManagment);
 
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en el puerto:${PORT}`);

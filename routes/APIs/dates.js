@@ -48,4 +48,18 @@ router.post("/creation", async (req, res) => {
       res.status(500).send("Error al insertar la cita");
     }
   });
+
+router.post("/myappointments", async(req, res)=>{
+  const {token} = req.body;
+  if(token){
+    try{
+      const [results] = await db.query('SELECT * FROM cita WHERE cliente_id = ? AND status != 3',[token]);
+      res.status(200).json({results});
+    }catch(e){
+      console.log('HUBO UN ERROR',e)
+      res.status(500).json({message: 'Error en la consulta'});
+    }
+
+  }
+})  
 module.exports = router;
