@@ -61,5 +61,15 @@ router.post("/myappointments", async(req, res)=>{
     }
 
   }
-})  
+})
+
+router.post("/cancelAppointment", async(req, res)=>{
+  const {token, indexDate} = req.body;
+  try{
+    const [result] = await db.query('DELETE FROM cita WHERE id=? AND correo=?',[indexDate,token]);
+    if(result) res.status(202).json({message: 'Appointment deleted successfully'});
+  }catch(e){
+    res.status(500).json({message: 'BAD REQUEST'});
+  }
+})
 module.exports = router;

@@ -6,10 +6,10 @@ const pool = mysql.createPool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-  connectTimeout: 10000 
+  waitForConnections: true, // Tener activas nuestras conexiones
+  connectionLimit: 10, // Conjunto de conexiones activas
+  queueLimit: 0, // Linea de espera en las conexiones
+  connectTimeout: 10000 //Espera de respuesta de la conexion 10 seg
 });
 
 
